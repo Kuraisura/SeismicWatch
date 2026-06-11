@@ -1,0 +1,225 @@
+rules_version = '2';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SeismicWatch — Firestore Security Rules
+//
+// These rules are the REAL authorization boundary. The Android client is treated as
+// untrusted: it can only ever do what is provably allowed below. Default is DENY.
+//
+// Model:
+//   users/{uid}                          private profile, owner-only
+//   circles/{circleId}                   group; memberUids[] drives all access
+//   circles/{circleId}/members/{uid}     per-member doc incl. last location
+//   invites/{code}                       capability token to join a circle
+//
+// Hazard data (earthquakes/typhoons) now lives in Supabase, NOT Firestore — this
+// project only holds the social/location layer.
+//
+// Deploy:  firebase deploy --only firestore:rules
+// App Check: while distributing by sideloaded APK, keep App Check enforcement for
+// Firestore UNENFORCED (Play Integrity can't attest non-Play installs). Re-enable it
+// once you ship through the Play Store.
+// ─────────────────────────────────────────────────────────────────────────────
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── helpers ──────────────────────────────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isVerified() {
+      // Email/password users must verify; Google users are always verified.
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+    function isUser(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+    function circleData(circleId) {
+      return get(/databases/$(database)/documents/circles/$(circleId)).data;
+    }
+    function isCircleMember(circleId) {
+      return isSignedIn() && request.auth.uid in circleData(circleId).memberUids;
+    }
+    function isCircleOwner(circleId) {
+      return isSignedIn() && request.auth.uid == circleData(circleId).ownerUid;
+    }
+
+    // ── users/{uid} : private profile, owner-only ────────────────────────────
+    match /users/{uid} {
+      allow read: if isUser(uid);
+      allow create: if isUser(uid)
+                    && request.resource.data.uid == uid;
+      allow update: if isUser(uid)
+                    // uid is immutable
+                    && request.resource.data.uid == uid;
+      allow delete: if isUser(uid);
+    }
+
+    // ── presence/{uid} : live "active now" heartbeat ─────────────────────────
+    // Low-sensitivity by design (only `online` + `lastActiveAt`) so it can be readable by any
+    // signed-in user — that's how peers see each other's status in People/Chat. Owner-write only,
+    // so nobody can forge another user's presence.
+    match /presence/{uid} {
+      allow read: if isSignedIn();
+      allow write: if isUser(uid);
+    }
+
+    // ── circles/{circleId} ───────────────────────────────────────────────────
+    match /circles/{circleId} {
+
+      // Only members may read the circle. (Use resource.data directly — no extra get().)
+      allow read: if isSignedIn() && request.auth.uid in resource.data.memberUids;
+
+      // Creator must put themselves as the sole owner+member.
+      // (Any signed-in user may create — email verification is NOT required, so friends
+      // testing a sideloaded build can use circles immediately. Tighten to isVerified()
+      // if you later require verified emails.)
+      allow create: if isSignedIn()
+                    && request.resource.data.ownerUid == request.auth.uid
+                    && request.resource.data.memberUids == [request.auth.uid]
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() <= 60;
+
+      // Owner can update freely (rename, manage members); otherwise the ONLY permitted
+      // update is a member adding themselves (join) or removing themselves (leave) — and
+      // nothing else on the document may change.
+      allow update: if isCircleOwner(circleId)
+                    || ( isSignedIn() && isSelfJoin(circleId) )
+                    || ( isSignedIn() && isSelfLeave(circleId) );
+
+      allow delete: if isCircleOwner(circleId);
+
+      function isSelfJoin(circleId) {
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['memberUids'])
+          && !(request.auth.uid in resource.data.memberUids)
+          && (request.auth.uid in request.resource.data.memberUids)
+          && request.resource.data.memberUids.size() == resource.data.memberUids.size() + 1;
+      }
+      function isSelfLeave(circleId) {
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['memberUids'])
+          && (request.auth.uid in resource.data.memberUids)
+          && !(request.auth.uid in request.resource.data.memberUids)
+          && request.resource.data.memberUids.size() == resource.data.memberUids.size() - 1;
+      }
+
+      // ── members subcollection ──────────────────────────────────────────────
+      match /members/{memberUid} {
+
+        // Any member of the circle can read every member doc (that's how you see family).
+        allow read: if isCircleMember(circleId);
+
+        // You may only create/update YOUR OWN member doc, and only if you actually belong
+        // to the circle. Location writes are bounded + sanity-checked.
+        allow create: if isUser(memberUid) && isCircleMember(circleId)
+                      && validMember(request.resource.data);
+        allow update: if isUser(memberUid) && isCircleMember(circleId)
+                      && validMember(request.resource.data);
+
+        // Leave (self) or be removed by the circle owner.
+        allow delete: if isUser(memberUid) || isCircleOwner(circleId);
+
+        function validMember(d) {
+          return d.role in ['owner', 'member']
+            && d.sharingEnabled is bool
+            && ( !('lastLocation' in d) || d.lastLocation == null || validLocation(d.lastLocation) );
+        }
+        function validLocation(l) {
+          return l.lat is number && l.lat >= -90 && l.lat <= 90
+            && l.lng is number && l.lng >= -180 && l.lng <= 180
+            && l.updatedAt is number;
+        }
+      }
+    }
+
+    // ── sos_events/{eventId} : a user's outgoing panic alert ──────────────────
+    // The owner writes their own event and stamps `audienceUids` = the uids who may see it
+    // (their circle co-members, computed client-side). Reads are gated on membership in that
+    // array, so the audience is enforced here rather than trusted to the client's queries.
+    match /sos_events/{eventId} {
+
+      allow create: if isSignedIn()
+                    && request.resource.data.ownerUid == request.auth.uid
+                    && request.resource.data.lat is number
+                    && request.resource.data.lon is number
+                    && request.resource.data.audienceUids is list
+                    // The owner must include themselves in the audience.
+                    && request.auth.uid in request.resource.data.audienceUids;
+
+      // Owner can update (e.g. late classification) or mark resolved; the audience can't edit.
+      allow update: if isSignedIn() && resource.data.ownerUid == request.auth.uid;
+
+      allow delete: if isSignedIn() && resource.data.ownerUid == request.auth.uid;
+
+      // Read: the owner, or anyone the owner explicitly included in the audience.
+      allow read: if isSignedIn()
+                  && ( resource.data.ownerUid == request.auth.uid
+                       || request.auth.uid in resource.data.audienceUids );
+    }
+
+    // ── chats/{chatId} : 1:1 conversation between two app users ───────────────
+    // chatId is the two participant uids sorted + joined with "_" (deterministic; the client
+    // builds it the same way). `participants` on the summary doc is the authorization anchor:
+    // only the two people listed may read the thread or its messages. Messages are append-only.
+    match /chats/{chatId} {
+
+      // Either participant may read the summary and update lastMessage/timestamps.
+      allow read: if isSignedIn() && request.auth.uid in resource.data.participants;
+      allow update: if isSignedIn() && request.auth.uid in resource.data.participants;
+
+      // Create the thread: caller must be one of exactly two participants (incl. themselves).
+      allow create: if isSignedIn()
+                    && request.resource.data.participants is list
+                    && request.resource.data.participants.size() == 2
+                    && request.auth.uid in request.resource.data.participants;
+
+      // Either participant may delete the conversation. This is what powers the free, client-side
+      // 7-day retention purge (Firestore's server-side TTL needs the paid Blaze plan; this project is
+      // on the free Spark plan, so the app deletes stale threads itself).
+      allow delete: if isSignedIn() && request.auth.uid in resource.data.participants;
+
+      match /messages/{messageId} {
+        // The two participant uids are encoded IN the chatId ("uidA_uidB", sorted). Deriving them by
+        // splitting the id — instead of get()-ing the summary doc — means the FIRST message of a new
+        // conversation is authorized even while the same atomic batch is still creating the summary.
+        // (Firebase uids never contain '_', so the split is unambiguous.)
+        function chatParticipants() {
+          return chatId.split('_');
+        }
+        // Only the two participants can read the log.
+        allow read: if isSignedIn() && request.auth.uid in chatParticipants();
+        // You may only post AS yourself, and only into a chat you belong to.
+        allow create: if isSignedIn()
+                      && request.auth.uid in chatParticipants()
+                      && request.resource.data.senderUid == request.auth.uid
+                      && request.resource.data.text is string
+                      && request.resource.data.text.size() > 0
+                      && request.resource.data.text.size() <= 2000;
+        // History is immutable, but a participant may DELETE messages — this is how the app's free
+        // client-side 7-day retention purge clears out a stale conversation's message log.
+        allow update: if false;
+        allow delete: if isSignedIn() && request.auth.uid in chatParticipants();
+      }
+    }
+
+    // ── invites/{code} : capability token ────────────────────────────────────
+    match /invites/{code} {
+      // Knowing the code lets any signed-in user read it (to preview + join).
+      allow read: if isSignedIn();
+
+      // Only a member of the target circle can mint an invite for it.
+      // (Signed-in is enough — verification not required; see circle create above.)
+      allow create: if isSignedIn()
+                    && request.resource.data.createdBy == request.auth.uid
+                    && request.auth.uid in circleData(request.resource.data.circleId).memberUids;
+
+      // Only the creator can revoke/modify, and circleId is immutable.
+      allow update: if isSignedIn()
+                    && resource.data.createdBy == request.auth.uid
+                    && request.resource.data.circleId == resource.data.circleId;
+
+      allow delete: if isSignedIn() && resource.data.createdBy == request.auth.uid;
+    }
+
+    // Everything else is denied by default.
+  }
+}

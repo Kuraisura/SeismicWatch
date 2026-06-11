@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">SeismicWatch</string>
+    <string name="monitor_notif_title">SeismicWatch is watching</string>
+    <string name="monitor_notif_text">Monitoring Philippine seismic activity</string>
+    <string name="alert_channel_name">Earthquake Alerts</string>
+    <string name="monitor_channel_name">Seismic Monitor</string>
+    <string name="tagline">Detect. Prepare. Stay safe.</string>
+    <string name="sos_widget_description">One-tap emergency SOS — sends your location to your circle.</string>
+    <string name="hazard_widget_description">Live nearest earthquake &amp; active typhoon at a glance.</string>
+</resources>

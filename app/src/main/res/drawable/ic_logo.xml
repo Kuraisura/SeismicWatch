@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SeismicWatch emblem — a red→orange gradient shell carrying the seismic EKG waveform,
+  wrapped in two concentric "ripple" rings. Matches the in-app RippleLogo brand mark.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Outer ripple ring -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF2D55"
+        android:strokeWidth="2"
+        android:strokeAlpha="0.30"
+        android:pathData="M54,54 m-46,0 a46,46 0 1,0 92,0 a46,46 0 1,0 -92,0" />
+
+    <!-- Inner ripple ring -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF6A00"
+        android:strokeWidth="2.5"
+        android:strokeAlpha="0.55"
+        android:pathData="M54,54 m-39,0 a39,39 0 1,0 78,0 a39,39 0 1,0 -78,0" />
+
+    <!-- Gradient rounded-square shell (red → orange, diagonal) -->
+    <path android:pathData="M46,21 L62,21 Q83,21 83,42 L83,66 Q83,87 62,87 L46,87 Q25,87 25,66 L25,42 Q25,21 46,21 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="25" android:startY="21"
+                android:endX="83" android:endY="87"
+                android:startColor="#FF2D55"
+                android:endColor="#FF6A00" />
+        </aapt:attr>
+    </path>
+
+    <!-- Seismic EKG waveform (chalk) inside the shell -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFF7F2F4"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M34,54 L43,54 L48,40 L55,70 L60,46 L66,60 L70,54 L74,54" />
+</vector>

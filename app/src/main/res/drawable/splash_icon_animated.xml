@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SeismicWatch splash icon — concentric seismic rings pulsing outward from a solid core,
+  in the Tactical Vibrant red→orange palette. On API 31+ the rings animate (staggered
+  pulse); on API 21-30 core-splashscreen renders the first frame statically, which still
+  reads as an intentional brand mark.
+-->
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="120dp"
+            android:height="120dp"
+            android:viewportWidth="120"
+            android:viewportHeight="120">
+
+            <!-- Outer ring -->
+            <group android:name="ring3" android:pivotX="60" android:pivotY="60">
+                <path
+                    android:fillColor="#00000000"
+                    android:strokeColor="#FF6A00"
+                    android:strokeWidth="2"
+                    android:strokeAlpha="0.45"
+                    android:pathData="M60,60 m-40,0 a40,40 0 1,0 80,0 a40,40 0 1,0 -80,0" />
+            </group>
+
+            <!-- Middle ring -->
+            <group android:name="ring2" android:pivotX="60" android:pivotY="60">
+                <path
+                    android:fillColor="#00000000"
+                    android:strokeColor="#FF6A00"
+                    android:strokeWidth="2.5"
+                    android:strokeAlpha="0.7"
+                    android:pathData="M60,60 m-27,0 a27,27 0 1,0 54,0 a27,27 0 1,0 -54,0" />
+            </group>
+
+            <!-- Inner ring -->
+            <group android:name="ring1" android:pivotX="60" android:pivotY="60">
+                <path
+                    android:fillColor="#00000000"
+                    android:strokeColor="#FF2D55"
+                    android:strokeWidth="3"
+                    android:pathData="M60,60 m-15,0 a15,15 0 1,0 30,0 a15,15 0 1,0 -30,0" />
+            </group>
+
+            <!-- Solid core -->
+            <group android:name="core" android:pivotX="60" android:pivotY="60">
+                <path
+                    android:fillColor="#FF2D55"
+                    android:pathData="M60,60 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+            </group>
+        </vector>
+    </aapt:attr>
+
+    <!-- Staggered outward pulse on the rings -->
+    <target android:name="ring1">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:duration="1100"
+                    android:valueFrom="0.6"
+                    android:valueTo="1.05"
+                    android:repeatCount="infinite"
+                    android:repeatMode="reverse"
+                    android:interpolator="@android:interpolator/accelerate_decelerate" />
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:duration="1100"
+                    android:valueFrom="0.6"
+                    android:valueTo="1.05"
+                    android:repeatCount="infinite"
+                    android:repeatMode="reverse"
+                    android:interpolator="@android:interpolator/accelerate_decelerate" />
+            </set>
+        </aapt:attr>
+    </target>
+
+    <target android:name="ring2">
+        <aapt:attr name="android:animation">
+            <set android:startOffset="180">
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:duration="1100"
+                    android:valueFrom="0.6"
+                    android:valueTo="1.05"
+                    android:repeatCount="infinite"
+                    android:repeatMode="reverse"
+                    android:interpolator="@android:interpolator/accelerate_decelerate" />
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:duration="1100"
+                    android:valueFrom="0.6"
+                    android:valueTo="1.05"
+                    android:repeatCount="infinite"
+                    android:repeatMode="reverse"
+                    android:interpolator="@android:interpolator/accelerate_decelerate" />
+            </set>
+        </aapt:attr>
+    </target>
+
+    <target android:name="ring3">
+        <aapt:attr name="android:animation">
+            <set android:startOffset="360">
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:duration="1100"
+                    android:valueFrom="0.6"
+                    android:valueTo="1.05"
+                    android:repeatCount="infinite"
+                    android:repeatMode="reverse"
+                    android:interpolator="@android:interpolator/accelerate_decelerate" />
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:duration="1100"
+                    android:valueFrom="0.6"
+                    android:valueTo="1.05"
+                    android:repeatCount="infinite"
+                    android:repeatMode="reverse"
+                    android:interpolator="@android:interpolator/accelerate_decelerate" />
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>

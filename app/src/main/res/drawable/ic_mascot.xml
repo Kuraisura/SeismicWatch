@@ -1,0 +1,72 @@
+<!--
+  "Lindol" — the friendly SeismicWatch earthquake-readiness mascot.
+  A cheerful seismic buddy wearing a safety hard hat. Used in empty states and tips.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- Soft shadow under the mascot -->
+    <path
+        android:fillColor="#1A000000"
+        android:pathData="M60,108 m-26,0 a26,6 0 1,0 52,0 a26,6 0 1,0 -52,0" />
+
+    <!-- Body / head -->
+    <path
+        android:fillColor="#00C7BE"
+        android:pathData="M60,70 m-34,0 a34,34 0 1,0 68,0 a34,34 0 1,0 -68,0" />
+
+    <!-- Belly highlight -->
+    <path
+        android:fillColor="#26FFFFFF"
+        android:pathData="M60,78 m-20,0 a20,16 0 1,0 40,0 a20,16 0 1,0 -40,0" />
+
+    <!-- Hard hat brim -->
+    <path
+        android:fillColor="#D9A93B"
+        android:pathData="M28,42 L92,42 Q92,48 86,48 L34,48 Q28,48 28,42 Z" />
+
+    <!-- Hard hat dome -->
+    <path
+        android:fillColor="#F0C96B"
+        android:pathData="M36,43 Q40,20 60,20 Q80,20 84,43 Z" />
+
+    <!-- Hard hat ridge -->
+    <path
+        android:fillColor="#D9A93B"
+        android:pathData="M58,22 L62,22 L62,43 L58,43 Z" />
+
+    <!-- Eyes (white) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M50,64 m-7,0 a7,8 0 1,0 14,0 a7,8 0 1,0 -14,0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M70,64 m-7,0 a7,8 0 1,0 14,0 a7,8 0 1,0 -14,0" />
+
+    <!-- Pupils -->
+    <path
+        android:fillColor="#12141C"
+        android:pathData="M51,65 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
+    <path
+        android:fillColor="#12141C"
+        android:pathData="M71,65 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
+
+    <!-- Cheeks -->
+    <path
+        android:fillColor="#33FFFFFF"
+        android:pathData="M42,76 m-4,0 a4,3 0 1,0 8,0 a4,3 0 1,0 -8,0" />
+    <path
+        android:fillColor="#33FFFFFF"
+        android:pathData="M78,76 m-4,0 a4,3 0 1,0 8,0 a4,3 0 1,0 -8,0" />
+
+    <!-- Smile -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#12141C"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:pathData="M52,82 Q60,90 68,82" />
+</vector>

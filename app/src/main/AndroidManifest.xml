@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- Life360-style live sharing keeps updating while the app is closed. Gated behind
+         an explicit in-app prominent-disclosure consent screen (Play policy). -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <!-- Emergency siren: force STREAM_ALARM to max and, with the user's one-time "Do Not Disturb
+         access" grant, break silent/DND for genuinely severe hazards (see AlarmSirenPlayer). -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+
+    <!-- Emergency mesh (Nearby Connections over BLE + Wi-Fi) + its foreground service types -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission
+        android:name="android.permission.NEARBY_WIFI_DEVICES"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
+    <!-- Family alerting: auto-SMS + auto-call top contact -->
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <!-- Package visibility (Android 11+): detect Messenger/WhatsApp + share/call targets -->
+    <queries>
+        <package android:name="com.facebook.orca" />
+        <package android:name="com.whatsapp" />
+        <package android:name="com.viber.voip" />
+        <package android:name="org.telegram.messenger" />
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <data android:mimeType="text/plain" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.DIAL" />
+        </intent>
+    </queries>
+
+    <application
+        android:name=".SeismicApplication"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SeismicWatch"
+        tools:targetApi="31">
+
+        <!-- MainActivity no longer carries the LAUNCHER filter directly: each theme's
+             <activity-alias> below does, so the launcher icon can be swapped at runtime
+             (see ThemeAliasManager). Exactly one alias is enabled at a time. -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.SeismicWatch"
+            android:screenOrientation="portrait" />
+
+        <!-- Per-theme launcher icons. Deep Ocean (the default theme) is enabled at install;
+             ThemeAliasManager enables the chosen one and disables the rest. Names must match
+             "com.gising.Launcher<AppTheme.aliasSuffix>". -->
+        <activity-alias
+            android:name=".LauncherDeepOcean"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@drawable/ic_launcher_deepocean"
+            android:roundIcon="@drawable/ic_launcher_deepocean"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias
+            android:name=".LauncherForest"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@drawable/ic_launcher_forest"
+            android:roundIcon="@drawable/ic_launcher_forest"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias
+            android:name=".LauncherIndigo"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@drawable/ic_launcher_indigo"
+            android:roundIcon="@drawable/ic_launcher_indigo"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias
+            android:name=".LauncherSlate"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@drawable/ic_launcher_slate"
+            android:roundIcon="@drawable/ic_launcher_slate"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias
+            android:name=".LauncherTacticalRed"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@drawable/ic_launcher_tacticalred"
+            android:roundIcon="@drawable/ic_launcher_tacticalred"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- Alert Full-Screen Activity -->
+        <activity
+            android:name=".ui.screens.AlertActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:theme="@style/Theme.SeismicWatch.Alert" />
+
+        <!-- ── Emergency / SOS subsystem ──────────────────────────────────────── -->
+
+        <!-- Full-screen panic UI; shows over the lock screen, woken by a trigger's FSI. -->
+        <activity
+            android:name=".emergency.SosActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.SeismicWatch.Alert" />
+
+        <!-- Quick Settings tile: one-tap SOS from the shade, even when locked. -->
+        <service
+            android:name=".emergency.SosTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_seismic_wave"
+            android:label="SOS"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="false" />
+        </service>
+
+        <!-- Home-screen (Glance) one-tap SOS widget. -->
+        <receiver
+            android:name=".emergency.SosWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sos_widget_info" />
+        </receiver>
+
+        <!-- Home-screen (Glance) "Nearest Threat" monitor widget: latest quake + active typhoon. -->
+        <receiver
+            android:name=".emergency.HazardMonitorReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/hazard_widget_info" />
+        </receiver>
+
+        <!-- Offline P2P SOS relay (Nearby Connections). -->
+        <service
+            android:name=".emergency.MeshService"
+            android:exported="false"
+            android:foregroundServiceType="connectedDevice" />
+
+        <!-- Opt-in power-button panic gesture (screen-toggle detector). -->
+        <service
+            android:name=".emergency.PowerButtonService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Panic-button emergency gesture detection while the screen toggles." />
+        </service>
+
+        <!-- Earthquake Monitoring Service -->
+        <service
+            android:name=".service.EarthquakeMonitorService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
+        <!-- Live family location sharing (Life360-style) -->
+        <service
+            android:name=".service.LocationSharingService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
+        <!-- Firebase Cloud Messaging: circle invites / family pushes -->
+        <service
+            android:name=".service.SeismicMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <!-- Boot Receiver -->
+        <receiver
+            android:name=".service.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+</manifest>

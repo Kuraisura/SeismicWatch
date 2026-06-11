@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Indigo Night launcher icon: purple gradient shell + seismic EKG on a dark ground. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:fillColor="#0D0B1A" android:pathData="M0,0h108v108h-108z" />
+    <path android:pathData="M46,21 L62,21 Q83,21 83,42 L83,66 Q83,87 62,87 L46,87 Q25,87 25,66 L25,42 Q25,21 46,21 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="linear"
+                android:startX="25" android:startY="21" android:endX="83" android:endY="87"
+                android:startColor="#7C6CF0" android:endColor="#B36BE6" />
+        </aapt:attr>
+    </path>
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFF7F2F4"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M34,54 L43,54 L48,40 L55,70 L60,46 L66,60 L70,54 L74,54" />
+</vector>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tactical Vibrant ground (obsidian) — shared by launcher icon + cold-start splash. -->
+    <color name="ic_launcher_background">#0A0608</color>
+    <color name="splash_background">#0A0608</color>
+</resources>

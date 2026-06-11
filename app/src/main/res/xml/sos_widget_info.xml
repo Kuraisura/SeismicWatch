@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="80dp"
+    android:minHeight="80dp"
+    android:targetCellWidth="2"
+    android:targetCellHeight="2"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen|keyguard"
+    android:previewImage="@drawable/ic_seismic_wave"
+    android:description="@string/sos_widget_description"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:updatePeriodMillis="0" />

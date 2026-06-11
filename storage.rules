@@ -1,0 +1,19 @@
+rules_version = '2';
+
+// Profile avatars. Anyone signed in may read (so family see each other's pictures);
+// only the owner may write their own avatar, and only reasonably-sized images.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /avatars/{uid}.jpg {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+    // Everything else: locked down by default.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,55 @@
+# ── Secrets / per-machine config (never commit) ──────────────────────────────
+# Firebase config — not a hard secret (App Check + Security Rules protect you),
+# but there's no reason to publish it.
+app/google-services.json
+google-services.json
+# Local SDK path + any signing/key material
+local.properties
+*.keystore
+*.jks
+key.properties
+
+# ── Build output ─────────────────────────────────────────────────────────────
+*.iml
+.gradle/
+/build/
+/app/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+
+# ── IDE ──────────────────────────────────────────────────────────────────────
+.idea/
+*.hprof
+
+# ── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Firebase tooling ─────────────────────────────────────────────────────────
+.firebase/
+firebase-debug.log
+functions/node_modules/
+node_modules/
+
+# ── Supabase ─────────────────────────────────────────────────────────────────
+supabase/.temp/
+
+# Sensitive local data
+.env
+.env.*
+!.env.example
+!.env.sample
+.claude/settings.local.json
+*.db
+*.sqlite
+*.sqlite3
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Security: ignore sensitive/generated files
+__pycache__/
+*.pyc
+app/release/
