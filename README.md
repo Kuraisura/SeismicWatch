@@ -59,73 +59,133 @@ A personal project in development. Hazard updates depend on upstream data and co
 
 Import the Gradle project into Android Studio with JDK 17 and the Android SDK configured in app/build.gradle. Configure Firebase and the Supabase hazard-data services used by the application. Test location, notification, background-service, and Nearby permissions on a compatible device. External data ingestion is configured separately from the Android build.
 
-## Screenshots
+## Screenshot and module walkthrough
 
-<table>
-<tr>
-<td align="center"><img src="screenshots/1.jpg" alt="Authentication gate" width="260"><br>Authentication gate</td>
-<td align="center"><img src="screenshots/2.jpg" alt="Command center" width="260"><br>Command center</td>
-</tr>
-</table>
+Expand a screen below to see the capture and an explanation of the module, its visible controls, and its role in the application.
+
+<details open>
+<summary><strong>01 · Account access</strong></summary>
+
+Email/phone credentials, Google sign-in, phone OTP, and password recovery provide entry points to the account-based hazard and family features. The screenshot shows sign-in choices rather than a completed login.
+
+<p><img src="screenshots/1.jpg" alt="Account access" width="360"></p>
+
+</details>
 
 <details>
-<summary>View all 14 screenshots</summary>
+<summary><strong>02 · Hazard dashboard</strong></summary>
 
-### 1. Authentication gate
+Active alerts, earthquake totals, and storm signals summarize current activity. The featured typhoon card and recent earthquake list lead into detailed tracking and event reports.
 
-![Authentication gate](screenshots/1.jpg)
+<p><img src="screenshots/2.jpg" alt="Hazard dashboard" width="360"></p>
 
-### 2. Command center
+</details>
 
-![Command center](screenshots/2.jpg)
+<details>
+<summary><strong>03 · Combined hazard map</strong></summary>
 
-### 3. Situational awareness map
+Earthquake and typhoon markers share a regional map. Magnitude filters and the color legend help users narrow events and see where activity is concentrated.
 
-![Situational awareness map](screenshots/3.jpg)
+<p><img src="screenshots/3.jpg" alt="Combined hazard map" width="360"></p>
 
-### 4. Typhoon tracking
+</details>
 
-![Typhoon tracking](screenshots/4.jpg)
+<details>
+<summary><strong>04 · Typhoon track and timeline</strong></summary>
 
-### 5. Post-quake assessment
+Storm-track points, intensity colors, weather imagery, and a playback timeline let users inspect the storm position over time. The legend distinguishes storm intensity and projected track markers.
 
-![Post-quake assessment](screenshots/5.jpg)
+<p><img src="screenshots/4.jpg" alt="Typhoon track and timeline" width="360"></p>
 
-### 6. Earthquake archive
+</details>
 
-![Earthquake archive](screenshots/6.jpg)
+<details>
+<summary><strong>05 · Earthquake event details</strong></summary>
 
-### 7. Typhoon archive
+Magnitude, location, depth, distance, and a location-based assessment explain one selected earthquake. Area, sharing, and felt-report actions support follow-up; the displayed assessment is an app estimate, not an official safety determination.
 
-![Typhoon archive](screenshots/7.jpg)
+<p><img src="screenshots/5.jpg" alt="Earthquake event details" width="360"></p>
 
-### 8. Emergency contacts
+</details>
 
-![Emergency contacts](screenshots/8.jpg)
+<details>
+<summary><strong>06 · Earthquake report browser</strong></summary>
 
-### 9. Live location sharing
+Search, severity filters, totals, and sorting organize a list of earthquake reports. Each entry provides magnitude, location, depth, and time before the user opens detailed information.
 
-![Live location sharing](screenshots/9.jpg)
+<p><img src="screenshots/6.jpg" alt="Earthquake report browser" width="360"></p>
 
-### 10. Automated alert rules
+</details>
 
-![Automated alert rules](screenshots/10.jpg)
+<details>
+<summary><strong>07 · Typhoon reports and local weather</strong></summary>
 
-### 11. Notification preferences
+Storm-category filters and signal counts sit above a Philippine weather list. Regional filters and the location card let users move between storm monitoring and local weather conditions.
 
-![Notification preferences](screenshots/11.jpg)
+<p><img src="screenshots/7.jpg" alt="Typhoon reports and local weather" width="360"></p>
 
-### 12. Profile & thresholds
+</details>
 
-![Profile & thresholds](screenshots/12.jpg)
+<details>
+<summary><strong>08 · Family and friends directory</strong></summary>
 
-### 13. Safety tools configuration
+Contact cards show activity and location-sharing state alongside communication actions. The directory gathers family connections so the user can choose whom to contact or locate.
 
-![Safety tools configuration](screenshots/13.jpg)
+<p><img src="screenshots/8.jpg" alt="Family and friends directory" width="360"></p>
 
-### 14. Transparency & support
+</details>
 
-![Transparency & support](screenshots/14.jpg)
+<details>
+<summary><strong>09 · Family circles and live location</strong></summary>
+
+The screen combines a sharing switch, create/join circle actions, a map, and member information. It lets users organize family circles and control their own location-sharing preference.
+
+<p><img src="screenshots/9.jpg" alt="Family circles and live location" width="360"></p>
+
+</details>
+
+<details>
+<summary><strong>10 · Family emergency-alert settings</strong></summary>
+
+A master family-alert switch, auto-SMS and auto-call settings, saved contacts, and test/share shortcuts configure intended emergency communication. Several controls are disabled in the captured state; actual delivery is not demonstrated.
+
+<p><img src="screenshots/10.jpg" alt="Family emergency-alert settings" width="360"></p>
+
+</details>
+
+<details>
+<summary><strong>11 · Notification preferences</strong></summary>
+
+Earthquake, typhoon, flood, sound/vibration, and emergency-override controls appear beneath the profile. Users can select alert categories and open emergency-contact setup.
+
+<p><img src="screenshots/11.jpg" alt="Notification preferences" width="360"></p>
+
+</details>
+
+<details>
+<summary><strong>12 · Profile and app preferences</strong></summary>
+
+The profile form collects a name, mobile number, and home address. Alert threshold, language, background synchronization, and appearance settings control the wider app experience.
+
+<p><img src="screenshots/12.jpg" alt="Profile and app preferences" width="360"></p>
+
+</details>
+
+<details>
+<summary><strong>13 · Appearance and emergency options</strong></summary>
+
+Theme and display-mode choices appear above strobe, SMS-fallback, mesh-relay, and panic-gesture switches. This screen configures optional behaviors; it does not demonstrate successful emergency delivery or nearby relay.
+
+<p><img src="screenshots/13.jpg" alt="Appearance and emergency options" width="360"></p>
+
+</details>
+
+<details>
+<summary><strong>14 · Help, privacy, and account controls</strong></summary>
+
+Help Center, Data Sources, Privacy Policy, version information, sign-out, and account deletion give users a place to inspect application information and manage their account.
+
+<p><img src="screenshots/14.jpg" alt="Help, privacy, and account controls" width="360"></p>
 
 </details>
 
